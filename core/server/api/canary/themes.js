@@ -39,7 +39,7 @@ module.exports = {
             let themeName = frame.options.name;
 
             if (limitService.isLimited('customThemes')) {
-                await limitService.errorIfWouldGoOverLimit('customThemes', {value: themeName});
+                // await limitService.errorIfWouldGoOverLimit('customThemes', {value: themeName});
             }
 
             const newSettings = [{
