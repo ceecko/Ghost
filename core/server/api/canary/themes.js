@@ -82,7 +82,7 @@ module.exports = {
                 const [org, repo] = frame.options.ref.toLowerCase().split('/');
 
                 //TODO: move the organization check to config
-                if (limitService.isLimited('customThemes') && org.toLowerCase() !== 'tryghost') {
+                if (limitService.isLimited('customThemes')/** && org.toLowerCase() !== 'tryghost'**/) {
                     await limitService.errorIfWouldGoOverLimit('customThemes', {value: repo.toLowerCase()});
                 }
 
