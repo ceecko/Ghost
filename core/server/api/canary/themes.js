@@ -119,7 +119,7 @@ module.exports = {
             if (s3 && process.env.APP_ID) {
                 const config = {
                     ACL: 'private',
-                    Body: fs.createReadStream(frame.file.path),
+                    Body: fs.createReadStream(zip.path),
                     Bucket: process.env.GHOST_STORAGE_ADAPTER_S3_PATH_BUCKET,
                     CacheControl: `no-store`,
                     Key: stripLeadingSlash(`${process.env.APP_ID}/themes/${zip.name}`)
