@@ -1,3 +1,7 @@
+const stripLeadingSlash = s => (s.indexOf('/') === 0 ? s.substring(1) : s);
+const dpS3 = require('../../api/canary/dp-s3');
+const ObjectID = require('bson-objectid');
+
 const fs = require('fs-extra');
 const os = require('os');
 const path = require('path');
@@ -49,8 +53,32 @@ const installFromGithub = async (ref) => {
         // install theme from zip
         const zip = {
             path: downloadPath,
-            name: zipName
+            name: `${ObjectID()}_${zipName}`
         };
+
+        // Upload theme to S3
+        const s3 = dpS3.getS3();
+        if (s3 && process.env.APP_ID) {
+            const config = {
+                ACL: 'private',
+                Body: fs.createReadStream(zip.path),
+                Bucket: process.env.GHOST_STORAGE_ADAPTER_S3_PATH_BUCKET,
+                CacheControl: `no-store`,
+                Key: stripLeadingSlash(`${process.env.APP_ID}/themes/${zip.name}`)
+            };
+
+            await s3.upload(config).promise();
+        } else {
+            const errorObj = {
+                errorDetails: {
+                    name: 'ThemeUploadS3Error'
+                },
+                message: 'Could not upload theme to S3'
+            };
+
+            throw new errors.HostLimitError(errorObj);
+        }
+
         const {theme, themeOverridden} = await setFromZip(zip);
 
         return {theme, themeOverridden};
