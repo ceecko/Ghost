@@ -111,7 +111,8 @@ module.exports = {
 
             let zip = {
                 path: frame.file.path,
-                name: `${ObjectID()}_${frame.file.originalname}`
+                // Normalizes filename so when Ghost restarts it can find the theme
+                name: `${ObjectID()}_${frame.file.originalname.replace(/[^\w@.]/gi, '-')}`
             };
 
             // Upload theme to S3

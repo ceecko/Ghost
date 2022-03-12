@@ -53,7 +53,8 @@ const installFromGithub = async (ref) => {
         // install theme from zip
         const zip = {
             path: downloadPath,
-            name: `${ObjectID()}_${zipName}`
+            // Normalizes filename so when Ghost restarts it can find the theme
+            name: `${ObjectID()}_${zipName.replace(/[^\w@.]/gi, '-')}`
         };
 
         // Upload theme to S3
