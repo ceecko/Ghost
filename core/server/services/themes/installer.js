@@ -1,5 +1,5 @@
 const stripLeadingSlash = s => (s.indexOf('/') === 0 ? s.substring(1) : s);
-const dpS3 = require('../../api/canary/dp-s3');
+const dpS3 = require('../../api/endpoints/dp-s3');
 const ObjectID = require('bson-objectid');
 
 const fs = require('fs-extra');
