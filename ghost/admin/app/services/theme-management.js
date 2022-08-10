@@ -67,7 +67,8 @@ export default class ThemeManagementService extends Service {
         let resultModal = null;
 
         try {
-            const isOverLimit = yield this.limit.checkWouldGoOverLimit('customThemes', {value: theme.name});
+            // const isOverLimit = yield this.limit.checkWouldGoOverLimit('customThemes', {value: theme.name});
+            const isOverLimit = false;
 
             if (isOverLimit) {
                 try {
