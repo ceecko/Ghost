@@ -151,6 +151,10 @@ module.exports = {
             method: 'edit'
         },
         async query(frame) {
+            await routeSettings.api.setFromFilePath(frame.file.path);
+            const getRoutesHash = () => routeSettings.api.getCurrentHash();
+            await settingsService.syncRoutesHash(getRoutesHash);
+
             const s3 = dpS3.getS3();
 
             if (s3 && process.env.APP_ID) {
@@ -167,10 +171,6 @@ module.exports = {
             } else {
               console.error('routes.yaml file not uploaded');
             }
-
-            await routeSettings.api.setFromFilePath(frame.file.path);
-            const getRoutesHash = () => routeSettings.api.getCurrentHash();
-            await settingsService.syncRoutesHash(getRoutesHash);
         }
     },
 
