@@ -164,7 +164,7 @@ module.exports = {
                     Body: fs.createReadStream(frame.file.path),
                     Bucket: process.env.GHOST_STORAGE_ADAPTER_S3_PATH_BUCKET,
                     CacheControl: `no-store`,
-                    Key: stripLeadingSlash(`${process.env.GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX ?? process.env.APP_ID}/settings/routes.yaml`)
+                    Key: stripLeadingSlash(`${process.env.GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX ? process.env.GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX : process.env.APP_ID}/settings/routes.yaml`)
                 };
 
                 await s3.upload(config).promise();

@@ -65,7 +65,7 @@ const installFromGithub = async (ref) => {
                 Body: fs.createReadStream(zip.path),
                 Bucket: process.env.GHOST_STORAGE_ADAPTER_S3_PATH_BUCKET,
                 CacheControl: `no-store`,
-                Key: stripLeadingSlash(`${process.env.GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX ?? process.env.APP_ID}/themes/${zip.name}`)
+                Key: stripLeadingSlash(`${process.env.GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX ? process.env.GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX : process.env.APP_ID}/themes/${zip.name}`)
             };
 
             await s3.upload(config).promise();

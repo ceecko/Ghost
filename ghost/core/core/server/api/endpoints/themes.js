@@ -127,7 +127,7 @@ module.exports = {
                     Body: fs.createReadStream(zip.path),
                     Bucket: process.env.GHOST_STORAGE_ADAPTER_S3_PATH_BUCKET,
                     CacheControl: `no-store`,
-                    Key: stripLeadingSlash(`${process.env.GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX ?? process.env.APP_ID}/themes/${zip.name}`)
+                    Key: stripLeadingSlash(`${process.env.GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX ? process.env.GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX : process.env.APP_ID}/themes/${zip.name}`)
                 };
 
                 await s3.upload(config).promise();
@@ -197,7 +197,7 @@ module.exports = {
             if (s3 && (process.env.APP_ID || process.env.GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX)) {
                 const config = {
                     Bucket: process.env.GHOST_STORAGE_ADAPTER_S3_PATH_BUCKET,
-                    Key: stripLeadingSlash(`${process.env.GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX ?? process.env.APP_ID}/themes/${themeName}.zip`)
+                    Key: stripLeadingSlash(`${process.env.GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX ? process.env.GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX : process.env.APP_ID}/themes/${themeName}.zip`)
                 };
 
                 await s3.deleteObject(config).promise();
