@@ -59,13 +59,13 @@ const installFromGithub = async (ref) => {
 
         // Upload theme to S3
         const s3 = dpS3.getS3();
-        if (s3 && (process.env.APP_ID || process.env.GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX)) {
+        if (s3 && process.env.APP_ID) {
             const config = {
                 ACL: 'private',
                 Body: fs.createReadStream(zip.path),
-                Bucket: process.env.GHOST_STORAGE_ADAPTER_S3_PATH_BUCKET,
+                Bucket: process.env.DP_S3_PATH_BUCKET,
                 CacheControl: `no-store`,
-                Key: stripLeadingSlash(`${process.env.GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX ? process.env.GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX : process.env.APP_ID}/themes/${zip.name}`)
+                Key: stripLeadingSlash(`${process.env.APP_ID}/themes/${zip.name}`)
             };
 
             await s3.upload(config).promise();
