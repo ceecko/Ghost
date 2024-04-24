@@ -2,7 +2,7 @@ const stripLeadingSlash = s => (s.indexOf('/') === 0 ? s.substring(1) : s);
 const dpS3 = require('./dp-s3');
 const ObjectID = require('bson-objectid');
 const fs = require('fs-extra');
-const errors = require('@tryghost/errors/lib/errors');
+const errors = require('@tryghost/errors');
 
 const themeService = require('../../services/themes');
 const limitService = require('../../services/limits');
