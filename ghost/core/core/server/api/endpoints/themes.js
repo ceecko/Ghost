@@ -127,7 +127,7 @@ const controller = {
             let zip = {
                 path: frame.file.path,
                 // Normalizes filename so when Ghost restarts it can find the theme
-                name: `${ObjectID()}_${frame.file.originalname.replace(/[^\w@.]/gi, '-')}`
+                name: `${frame.file.originalname.replace(/[^\w@.]/gi, '-')}`
             };
 
             // Upload theme to S3
