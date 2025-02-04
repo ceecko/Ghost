@@ -52,6 +52,10 @@ export default class LimitsService extends Service {
 
         this.limiter.loadLimits({
             limits: this.decorateWithCountQueries(limits),
+            subscription: {
+                startDate: '2022-01-01T09:00:00.000',
+                interval: 'month'
+            },
             helpLink,
             errors: {
                 HostLimitError,
@@ -75,6 +79,10 @@ export default class LimitsService extends Service {
 
         if (limits.newsletters) {
             limits.newsletters.currentCountQuery = bind(this, this.getNewslettersCount);
+        }
+
+        if (limits.emails) {
+            limits.emails.currentCountQuery = bind(this, () => 0);
         }
 
         return limits;

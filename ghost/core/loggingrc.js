@@ -24,4 +24,8 @@ loggingConfig.metrics.metadata = {
     version: ghostVersion.original
 };
 
+if(process.env.APP_ID) {
+    loggingConfig.metrics.metadata.appId = process.env.APP_ID
+}
+
 module.exports = loggingConfig;
