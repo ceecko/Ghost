@@ -240,9 +240,14 @@ const ThemeToolbar: React.FC<ThemeToolbarProps> = ({
                 formSheet: false
             });
         } else {
+            const prompt = (uploadConfig?.error
+                ? <div dangerouslySetInnerHTML={{__html: uploadConfig.error}}></div>
+                : undefined
+            )
             NiceModal.show(LimitModal, {
                 title: 'Upgrade to enable custom themes',
-                prompt: uploadConfig.error || <>Your current plan only supports official themes. You can install them from the <a href="https://ghost.org/marketplace/">Ghost theme marketplace</a>.</>,
+                okLabel: '',
+                prompt: prompt || <>Your current plan only supports official themes. You can install them from the <a href="https://ghost.org/marketplace/">Ghost theme marketplace</a>.</>,
                 onOk: () => updateRoute({route: '/pro', isExternal: true})
             });
         }
