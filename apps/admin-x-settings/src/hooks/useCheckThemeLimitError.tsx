@@ -19,9 +19,6 @@ export const useCheckThemeLimitError = (): UseCheckThemeLimitErrorReturn => {
     const noThemeChangesAllowed = allowedThemesList?.length === 1 || false;
 
     const checkError = useCallback(async (themeName?: string): Promise<string | null> => {
-        console.log('**************')
-        console.log(limiter)
-        console.log(limiter?.isLimited('customThemes'))
         if (!limiter?.isLimited('customThemes')) {
             return null;
         }
@@ -34,15 +31,11 @@ export const useCheckThemeLimitError = (): UseCheckThemeLimitErrorReturn => {
         }
 
         try {
-            console.log('start limit check')
             // Use '.' for single theme to force error, or specific theme name
             const value = noThemeChangesAllowed ? '.' : (themeName || '.');
             await limiter.errorIfWouldGoOverLimit('customThemes', {value});
-            console.log('finished limit check - no error')
             return null; // No error
         } catch (error) {
-            console.log('error limit check')
-            console.log(error)
             if (error instanceof HostLimitError) {
                 return error.message || 'Your current plan doesn\'t support changing themes.';
             }
