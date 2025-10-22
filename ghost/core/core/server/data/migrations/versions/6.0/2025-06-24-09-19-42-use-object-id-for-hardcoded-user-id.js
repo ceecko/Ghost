@@ -52,7 +52,19 @@ module.exports = createNonTransactionalMigration(
 
         // 2. Tables with author_id column
         await knex('posts_authors').where('author_id', LEGACY_HARDCODED_USER_ID).update({author_id: newId});
-        await knex('post_revisions').where('author_id', LEGACY_HARDCODED_USER_ID).update({author_id: newId});
+
+        while(true) {
+            logging.info(`Migrating post_revisions with limit`);
+
+            await knex('post_revisions').where('author_id', LEGACY_HARDCODED_USER_ID).limit(10).update({author_id: newId});
+            const post = await knex('post_revisions').where('author_id', LEGACY_HARDCODED_USER_ID).first();
+            if(!post) {
+                logging.info(`No more post_revisions, continue`);
+                break
+            }
+            logging.info(`Found post_revisions, repeat`);
+        }
+
 
         // 3. Tables with published_by column (nullable)
         while(true) {
