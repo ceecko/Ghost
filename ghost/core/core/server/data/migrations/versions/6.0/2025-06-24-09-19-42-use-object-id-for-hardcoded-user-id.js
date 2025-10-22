@@ -1,11 +1,11 @@
 const logging = require('@tryghost/logging');
 const ObjectID = require('bson-objectid').default;
 
-const {createNonTransactionalMigration} = require('../../utils');
+const {createTransactionalMigration} = require('../../utils');
 
 const LEGACY_HARDCODED_USER_ID = '1';
 
-module.exports = createNonTransactionalMigration(
+module.exports = createTransactionalMigration(
     async function up(knex) {
         const newId = (new ObjectID()).toHexString();
 
@@ -55,7 +55,17 @@ module.exports = createNonTransactionalMigration(
         await knex('post_revisions').where('author_id', LEGACY_HARDCODED_USER_ID).update({author_id: newId});
 
         // 3. Tables with published_by column (nullable)
-        await knex('posts').where('published_by', LEGACY_HARDCODED_USER_ID).update({published_by: newId});
+        while(true) {
+            logging.info(`Migrating posts with limit`);
+
+            await knex('posts').where('published_by', LEGACY_HARDCODED_USER_ID).limit(10).update({published_by: newId});
+            const post = await knex('posts').where('published_by', LEGACY_HARDCODED_USER_ID).first();
+            if(!post) {
+                logging.info(`No more posts, continue`);
+                break
+            }
+            logging.info(`Found posts, repeat`);
+        }
 
         // 4. Actions table with actor_id
         await knex('actions')
