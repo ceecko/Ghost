@@ -1,11 +1,31 @@
 <GhApp>
     <GhSkipLink @anchor=".gh-main">Skip to main content</GhSkipLink>
 
-    <AlertsWormhole>
-        {{#if this.upgradeStatus.refreshRequired}}
-            <div class="gh-update-banner">
-                {{!-- template-lint-disable no-invalid-link-text --}}
-                <span>Ghost has been updated! To get access to the latest features, refresh or <a href="javascript:window.location.reload(true)">click here</a>.</span>
+    {{#if this.upgradeStatus.refreshRequired}}
+        <div class="gh-update-banner">
+            {{!-- template-lint-disable no-invalid-link-text --}}
+            <span>Ghost has been updated! To get access to the latest features, refresh or <a href="javascript:window.location.reload(true)">click here</a>.</span>
+        </div>
+    {{/if}}
+
+    {{#if (and this.session.user.isAdmin this.showUpdateBanner)}}
+        <aside class="gh-update-banner gh-60">
+        {{#if this.session.user.isOwnerOnly}}
+            <div class="gh-alert-content">
+                A new major version of Ghost is available! <a href="https://ghost.org/6" target="_blank" rel="noopener noreferrer" class="whatsnew">See what's new</a>
+            </div>
+            <button class="button" type="button" {{on "click" this.openUpdateTab}}>
+                Update to Ghost 6.0 &rarr;
+            </button>
+        {{else}}
+            <div class="gh-alert-content">
+                Your Ghost install is ready for a major update!
+                {{#if this.ownerUserNameOrEmail}}
+                    {{this.ownerUserNameOrEmail}}
+                {{else}}
+                    Your site owner
+                {{/if}}
+                will need to log in to do this.
             </div>
         {{/if}}
 
