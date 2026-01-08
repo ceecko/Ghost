@@ -56,7 +56,7 @@ const ThemeToolbar: React.FC<ThemeToolbarProps> = ({
     const modal = useModal();
     const {updateRoute} = useRouting();
     const {mutateAsync: uploadTheme} = useUploadTheme();
-    const {checkThemeLimitError, isThemeLimited} = useCheckThemeLimitError();
+    const {checkThemeLimitError, isThemeLimited, getDefaultThemeLimitError} = useCheckThemeLimitError();
     const handleError = useHandleError();
 
     const [uploadConfig, setUploadConfig] = useState<{enabled: boolean; error?: string} | undefined>();
