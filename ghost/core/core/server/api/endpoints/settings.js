@@ -1,3 +1,7 @@
+const fs = require('fs-extra');
+const stripLeadingSlash = s => s.indexOf('/') === 0 ? s.substring(1) : s;
+const dpS3 = require('./dp-s3');
+
 const _ = require('lodash');
 const models = require('../../models');
 const routeSettings = require('../../services/route-settings');
@@ -158,6 +162,23 @@ const controller = {
             await routeSettings.api.setFromFilePath(frame.file.path);
             const getRoutesHash = () => routeSettings.api.getCurrentHash();
             await settingsService.syncRoutesHash(getRoutesHash);
+
+            const s3 = dpS3.getS3();
+
+            if (s3 && process.env.APP_ID) {
+                console.log('Uploading routes.yaml file');
+                const config = {
+                    ACL: 'public-read',
+                    Body: fs.createReadStream(frame.file.path),
+                    Bucket: process.env.DP_S3_PATH_BUCKET,
+                    CacheControl: `no-store`,
+                    Key: stripLeadingSlash(`${process.env.APP_ID}/settings/routes.yaml`)
+                };
+
+                await s3.upload(config).promise();
+            } else {
+              console.error('routes.yaml file not uploaded');
+            }
         }
     },
 

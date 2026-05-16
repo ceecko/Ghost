@@ -838,7 +838,7 @@ jobs:
           curl --retry 10 --retry-connrefused --retry-delay 3 -fsSI "$URL"
           ghost stop -d "$DIR"
 
-      - name: Latest Release
+      - name: Latest v5 Release
         run: |
           DIR=$(mktemp -d)
           ghost install local -d "$DIR"
