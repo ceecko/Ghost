@@ -23,7 +23,8 @@ const self = {
                 body: JSON.stringify({
                     email: email,
                     headers: req.headers,
-                })
+                }),
+                signal: AbortSignal.timeout(3000)
             })
 
             const data = await response.json()
