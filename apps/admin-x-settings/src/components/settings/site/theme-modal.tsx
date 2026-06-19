@@ -56,7 +56,7 @@ const ThemeToolbar: React.FC<ThemeToolbarProps> = ({
     const modal = useModal();
     const {updateRoute} = useRouting();
     const {mutateAsync: uploadTheme} = useUploadTheme();
-    const {checkThemeLimitError, isThemeLimited} = useCheckThemeLimitError();
+    const {checkThemeLimitError, isThemeLimited, getDefaultThemeLimitError} = useCheckThemeLimitError();
     const handleError = useHandleError();
 
     const [uploadConfig, setUploadConfig] = useState<{enabled: boolean; error?: string} | undefined>();
@@ -67,7 +67,11 @@ const ThemeToolbar: React.FC<ThemeToolbarProps> = ({
             // Theme upload is always a custom theme, so we check with '.'
             // to force an error if ANY theme limit is applied
             if (isThemeLimited) {
-                const error = await checkThemeLimitError('.');
+                let error = await checkThemeLimitError('.');
+                if (!error) {
+                    error = await getDefaultThemeLimitError('.')
+                }
+
                 setUploadConfig({enabled: false, error: error || 'Your current plan doesn\'t support uploading custom themes.'});
             } else {
                 setUploadConfig({enabled: true});
@@ -241,9 +245,14 @@ const ThemeToolbar: React.FC<ThemeToolbarProps> = ({
                 formSheet: false
             });
         } else {
+            const prompt = (uploadConfig?.error
+                ? <div dangerouslySetInnerHTML={{__html: uploadConfig.error}}></div>
+                : undefined
+            )
             NiceModal.show(LimitModal, {
                 title: 'Upgrade to enable custom themes',
-                prompt: uploadConfig.error || <>Your current plan only supports official themes. You can install them from the <a href="https://ghost.org/marketplace/">Ghost theme marketplace</a>.</>,
+                okLabel: '',
+                prompt: prompt || <>Your current plan only supports official themes. You can install them from the <a href="https://ghost.org/marketplace/">Ghost theme marketplace</a>.</>,
                 onOk: () => updateRoute({route: '/pro', isExternal: true})
             });
         }
