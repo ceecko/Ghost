@@ -7,6 +7,10 @@ const self = {
             const ghostApiUrl = process.env.GHOST_API_URL
             const secretKey = process.env.GHOST_API_SECRET_KEY
 
+            if(process.env.DP_DISABLE_MAGIC_LINK_SEND_CHECK) {
+                return next()
+            }
+
             if(typeof req.body?.email !== 'string') {
                 return next()
             }
@@ -29,12 +33,12 @@ const self = {
 
             const data = await response.json()
 
-            if (data?.allow !== true) {
-                // return next(new errors.TooManyRequestsError({
-                //     message: `Too many different subscribe attempts, try again later`,
-                //     context: 'Too many attempts',
-                //     help: 'Too many attempts'
-                // }))
+            if (data?.allow === false) {
+                return next(new errors.TooManyRequestsError({
+                    message: `Too many different subscribe attempts, try again later`,
+                    context: 'Too many attempts',
+                    help: 'Too many attempts'
+                }))
             }
 
             next()
