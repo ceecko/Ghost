@@ -15,6 +15,7 @@ const api = require('../../api').endpoints;
 const commentRouter = require('../comments');
 const announcementRouter = require('../announcement');
 const corsMiddleware = require('./middleware/cors');
+const { canSendMagicLink } = require('./dp-members');
 
 /**
  * @returns {import('express').Application}
@@ -86,6 +87,7 @@ module.exports = function setupMembersApp() {
         shared.middleware.brute.membersAuthEnumeration,
         // Prevent brute forcing passwords for the same email address
         shared.middleware.brute.membersAuth,
+        canSendMagicLink,
         // NOTE: this is wrapped in a function to ensure we always go via the getter
         function lazySendMagicLinkMw(req, res, next) {
             return membersService.api.middleware.sendMagicLink(req, res, next);
