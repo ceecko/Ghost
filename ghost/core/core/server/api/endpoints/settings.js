@@ -1,4 +1,3 @@
-const fs = require('fs-extra');
 const stripLeadingSlash = s => s.indexOf('/') === 0 ? s.substring(1) : s;
 const dpS3 = require('./dp-s3');
 
