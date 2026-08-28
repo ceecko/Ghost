@@ -125,6 +125,10 @@ export const useLimiter = (): Limiter => {
 
     limiter.loadLimits({
       limits,
+      subscription: {
+        startDate: '2022-01-01T09:00:00.000',
+        interval: 'month'
+      },
       helpLink,
       errors: {
         HostLimitError,

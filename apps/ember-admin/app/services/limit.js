@@ -114,7 +114,7 @@ export default class LimitsService extends Service {
         }
 
         if (limits.emails) {
-            limits.emails.currentCountQuery = bind(this, this.getEmailsCount);
+            limits.emails.currentCountQuery = bind(this, () => 0);
         }
 
         return limits;
