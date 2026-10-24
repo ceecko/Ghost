@@ -71,7 +71,7 @@ const ThemeToolbar: React.FC<ThemeToolbarProps> = ({ currentTab, setCurrentTab, 
   const { updateRoute } = useSettingsNavigation();
   const upgradeRoute = useUpgradeRoute();
   const { mutateAsync: uploadTheme } = useUploadTheme();
-  const { checkThemeLimitError, isThemeLimited } = useCheckThemeLimitError();
+  const {checkThemeLimitError, isThemeLimited, getDefaultThemeLimitError} = useCheckThemeLimitError();
   const handleError = useHandleError();
   const { confirm, showLimit } = useConfirmation();
 
@@ -90,7 +90,10 @@ const ThemeToolbar: React.FC<ThemeToolbarProps> = ({ currentTab, setCurrentTab, 
       // Theme upload is always a custom theme, so we check with '.'
       // to force an error if ANY theme limit is applied
       if (isThemeLimited) {
-        const error = await checkThemeLimitError('.');
+        let error = await checkThemeLimitError('.');
+        if (!error) {
+            error = await getDefaultThemeLimitError('.')
+        }
         setUploadConfig({
           enabled: false,
           error: error || "Your current plan doesn't support uploading custom themes.",
@@ -232,9 +235,14 @@ const ThemeToolbar: React.FC<ThemeToolbarProps> = ({ currentTab, setCurrentTab, 
         formSheet: false,
       });
     } else {
+      const prompt = (uploadConfig?.error
+          ? <div dangerouslySetInnerHTML={{__html: uploadConfig.error}}></div>
+          : undefined
+      )
       showLimit({
         title: 'Upgrade to enable custom themes',
-        prompt: uploadConfig.error || (
+        okLabel: '',
+        prompt: prompt || (
           <>
             Your current plan only supports official themes. You can install them from the{' '}
             <Link href="https://ghost.org/marketplace/" external>
