@@ -1,10 +1,8 @@
-const stripLeadingSlash = s => s.indexOf('/') === 0 ? s.substring(1) : s;
-const dpS3 = require('./dp-s3');
-
 const _ = require('lodash');
 const fs = require('fs-extra');
 const models = require('../../models');
 const routeSettings = require('../../services/route-settings');
+const uploadSettingsToS3 = require('./utils/upload-settings-to-s3');
 const { BadRequestError } = require('@tryghost/errors');
 const settingsService = require('../../services/settings/settings-service');
 const membersService = require('../../services/members');
@@ -195,23 +193,7 @@ const controller = {
     async query(frame) {
       const content = await fs.readFile(frame.file.path, 'utf8');
       await routeSettings.api.upload(content);
-
-      const s3 = dpS3.getS3();
-
-      if (s3 && process.env.APP_ID) {
-        console.log('Uploading routes.yaml file');
-        const config = {
-          ACL: 'public-read',
-          Body: fs.createReadStream(frame.file.path),
-          Bucket: process.env.DP_S3_PATH_BUCKET,
-          CacheControl: `no-store`,
-          Key: stripLeadingSlash(`${process.env.APP_ID}/settings/routes.yaml`)
-        };
-
-        await s3.upload(config).promise();
-      } else {
-        console.error('routes.yaml file not uploaded');
-      }
+      await uploadSettingsToS3('settings/routes.yaml', content);
     },
   },
 

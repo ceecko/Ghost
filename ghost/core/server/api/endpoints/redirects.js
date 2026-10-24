@@ -1,4 +1,5 @@
 const fs = require('fs-extra');
+const uploadSettingsToS3 = require('./utils/upload-settings-to-s3');
 
 const customRedirects = require('../../services/custom-redirects');
 const {
@@ -37,7 +38,11 @@ const controller = {
     async query(frame) {
       const content = await fs.readFile(frame.file.path, 'utf-8');
       const redirects = frame.file.ext === '.yaml' ? parseYaml(content) : parseJson(content);
-      return customRedirects.api.replace(redirects);
+      await customRedirects.api.replace(redirects);
+      await uploadSettingsToS3(
+        'settings/redirects.yaml',
+        frame.file.ext === '.yaml' ? content : serializeToYaml(redirects),
+      );
     },
   },
 };
