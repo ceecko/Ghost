@@ -2,6 +2,7 @@ const _ = require('lodash');
 const fs = require('fs-extra');
 const models = require('../../models');
 const routeSettings = require('../../services/route-settings');
+const uploadSettingsToS3 = require('./utils/upload-settings-to-s3');
 const { BadRequestError } = require('@tryghost/errors');
 const settingsService = require('../../services/settings/settings-service');
 const membersService = require('../../services/members');
@@ -216,6 +217,7 @@ const controller = {
     async query(frame) {
       const content = await fs.readFile(frame.file.path, 'utf8');
       await routeSettings.api.upload(content);
+      await uploadSettingsToS3('settings/routes.yaml', content);
     },
   },
 

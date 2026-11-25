@@ -1167,6 +1167,11 @@
   {
     "rule": "service-dependencies",
     "from": "ghost/core/server/services/themes/installer.js",
+    "to": "../../api/endpoints/dp-s3"
+  },
+  {
+    "rule": "service-dependencies",
+    "from": "ghost/core/server/services/themes/installer.js",
     "to": "@tryghost/request"
   },
   {
@@ -1183,6 +1188,11 @@
     "rule": "service-dependencies",
     "from": "ghost/core/server/services/themes/installer.js",
     "to": "os"
+  },
+  {
+    "rule": "service-unresolved",
+    "from": "ghost/core/server/services/themes/installer.js",
+    "to": "../../api/endpoints/dp-s3"
   },
   {
     "rule": "service-dependencies",
